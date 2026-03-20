@@ -85,3 +85,28 @@ export function useShopSettings() {
 
   return { settings, updateSettings };
 }
+
+export function useCustomers() {
+  const [customers, setCustomers] = useState<Customer[]>(() => {
+    const saved = localStorage.getItem('gstbill_customers');
+    return saved ? JSON.parse(saved) : [];
+  });
+
+  const saveCustomers = useCallback((updated: Customer[]) => {
+    setCustomers(updated);
+    localStorage.setItem('gstbill_customers', JSON.stringify(updated));
+  }, []);
+
+  const addOrUpdateCustomer = useCallback((name: string, phone?: string) => {
+    const trimmedName = name.trim();
+    if (!trimmedName) return;
+    const existing = customers.find(c => c.name.toLowerCase() === trimmedName.toLowerCase());
+    if (existing) {
+      saveCustomers(customers.map(c => c.id === existing.id ? { ...c, phone: phone || c.phone, lastBilledAt: new Date().toISOString() } : c));
+    } else {
+      saveCustomers([...customers, { id: crypto.randomUUID(), name: trimmedName, phone, lastBilledAt: new Date().toISOString() }]);
+    }
+  }, [customers, saveCustomers]);
+
+  return { customers, addOrUpdateCustomer };
+}
