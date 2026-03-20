@@ -2,7 +2,7 @@ import { useState, useRef, useCallback, useMemo, KeyboardEvent } from 'react';
 import { Plus, Trash2, Mic, MicOff, FileText } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { BillItem, calculateBillItem, numberToWords } from '@/types/billing';
-import { useProducts, useInvoices, useShopSettings } from '@/store/useStore';
+import { useProducts, useInvoices, useShopSettings, useCustomers } from '@/store/useStore';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { toast } from 'sonner';
