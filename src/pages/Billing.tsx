@@ -106,6 +106,7 @@ export default function Billing() {
   const newBill = useCallback(() => {
     setItems([]);
     setCustomerName('');
+    setCustomerPhone('');
     setShowInvoice(false);
     setLastInvoice(null);
   }, []);
