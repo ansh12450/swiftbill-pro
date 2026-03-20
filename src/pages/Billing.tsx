@@ -12,15 +12,24 @@ export default function Billing() {
   const { products } = useProducts();
   const { addInvoice, getNextInvoiceNumber } = useInvoices();
   const { settings } = useShopSettings();
+  const { customers, addOrUpdateCustomer } = useCustomers();
   const [items, setItems] = useState<BillItem[]>([]);
   const [customerName, setCustomerName] = useState('');
+  const [customerPhone, setCustomerPhone] = useState('');
   const [showInvoice, setShowInvoice] = useState(false);
   const [lastInvoice, setLastInvoice] = useState<any>(null);
   const [listening, setListening] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
   const [activeRow, setActiveRow] = useState(-1);
   const [showSuggestions, setShowSuggestions] = useState(false);
+  const [showCustomerSuggestions, setShowCustomerSuggestions] = useState(false);
   const searchRef = useRef<HTMLInputElement>(null);
+  const customerRef = useRef<HTMLInputElement>(null);
+
+  const filteredCustomers = useMemo(() => {
+    if (!customerName) return customers.slice(0, 5);
+    return customers.filter(c => c.name.toLowerCase().includes(customerName.toLowerCase())).slice(0, 5);
+  }, [customers, customerName]);
 
   const filteredProducts = useMemo(() => {
     if (!searchTerm) return products.slice(0, 8);
