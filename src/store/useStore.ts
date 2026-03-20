@@ -1,5 +1,5 @@
 import { useState, useCallback } from 'react';
-import { Product, Invoice, ShopSettings } from '@/types/billing';
+import { Product, Invoice, ShopSettings, Customer } from '@/types/billing';
 
 const SAMPLE_PRODUCTS: Product[] = [
   { id: '1', name: 'Cricket Bat (Kashmir Willow)', price: 1200, gstPercent: 12, category: 'Sports' },

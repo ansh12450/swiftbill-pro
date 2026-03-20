@@ -40,6 +40,14 @@ export interface ShopSettings {
   email?: string;
 }
 
+export interface Customer {
+  id: string;
+  name: string;
+  phone?: string;
+  address?: string;
+  lastBilledAt?: string;
+}
+
 export function calculateBillItem(productName: string, qty: number, rate: number, gstPercent: number): BillItem {
   const amount = qty * rate;
   const gstAmount = amount * (gstPercent / 100);
