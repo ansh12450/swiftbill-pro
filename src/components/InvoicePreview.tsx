@@ -18,51 +18,80 @@ export function InvoicePreview({ invoice, settings, onBack }: Props) {
 
   const handlePDF = () => {
     const doc = new jsPDF();
+    const pageW = doc.internal.pageSize.getWidth();
+    const pageH = doc.internal.pageSize.getHeight();
     const margin = 15;
     let y = margin;
 
-    doc.setFontSize(16);
+    // --- Full page background ---
+    doc.setFillColor(245, 247, 250); // light blue-gray
+    doc.rect(0, 0, pageW, pageH, 'F');
+
+    // --- Top accent bar ---
+    doc.setFillColor(67, 56, 202); // indigo
+    doc.rect(0, 0, pageW, 38, 'F');
+
+    // Shop name in white on accent bar
+    doc.setTextColor(255, 255, 255);
+    doc.setFontSize(18);
     doc.setFont('helvetica', 'bold');
-    doc.text(settings.shopName, margin, y);
-    y += 6;
+    doc.text(settings.shopName, margin, 16);
     doc.setFontSize(8);
     doc.setFont('helvetica', 'normal');
-    doc.text(settings.address, margin, y);
-    y += 4;
-    doc.text(`GSTIN: ${settings.gstin} | Ph: ${settings.phone}`, margin, y);
-    y += 8;
+    doc.text(settings.address, margin, 23);
+    doc.text(`GSTIN: ${settings.gstin}  |  Ph: ${settings.phone}`, margin, 29);
 
-    doc.setDrawColor(0);
-    doc.line(margin, y, 195, y);
-    y += 6;
+    y = 46;
+    doc.setTextColor(30, 30, 60);
 
-    doc.setFontSize(12);
+    // --- TAX INVOICE badge ---
+    const badgeW = 46;
+    const badgeH = 8;
+    const badgeX = (pageW - badgeW) / 2;
+    doc.setFillColor(67, 56, 202);
+    doc.roundedRect(badgeX, y - 5, badgeW, badgeH, 2, 2, 'F');
+    doc.setTextColor(255, 255, 255);
+    doc.setFontSize(10);
     doc.setFont('helvetica', 'bold');
-    doc.text('TAX INVOICE', 105, y, { align: 'center' });
-    y += 8;
+    doc.text('TAX INVOICE', pageW / 2, y, { align: 'center' });
+    y += 10;
 
+    // --- Invoice details card ---
+    doc.setFillColor(255, 255, 255);
+    doc.roundedRect(margin, y, pageW - margin * 2, 18, 3, 3, 'F');
+    doc.setTextColor(80, 80, 120);
     doc.setFontSize(9);
     doc.setFont('helvetica', 'normal');
-    doc.text(`Invoice: ${invoice.invoiceNumber}`, margin, y);
-    doc.text(`Date: ${new Date(invoice.date).toLocaleDateString('en-IN')}`, 140, y);
-    y += 5;
-    doc.text(`Customer: ${invoice.customerName}`, margin, y);
+    doc.text(`Invoice: ${invoice.invoiceNumber}`, margin + 4, y + 7);
+    doc.text(`Date: ${new Date(invoice.date).toLocaleDateString('en-IN')}`, pageW - margin - 4, y + 7, { align: 'right' });
+    doc.text(`Customer: ${invoice.customerName}`, margin + 4, y + 14);
+    y += 24;
+
+    // --- Table ---
+    const cols = [margin, 58, 82, 102, 122, 140, 155, 170, 185];
+    const headers = ['Product', 'Qty', 'Rate', 'Amt', 'GST%', 'CGST', 'SGST', 'Total'];
+
+    // Table header row
+    doc.setFillColor(67, 56, 202);
+    doc.roundedRect(margin, y - 4, pageW - margin * 2, 8, 2, 2, 'F');
+    doc.setTextColor(255, 255, 255);
+    doc.setFontSize(7.5);
+    doc.setFont('helvetica', 'bold');
+    headers.forEach((h, i) => doc.text(h, cols[i], y + 1));
     y += 8;
 
-    // Table header
-    const cols = [margin, 55, 80, 100, 120, 140, 155, 170, 185];
-    const headers = ['Product', 'Qty', 'Rate', 'Amt', 'GST%', 'CGST', 'SGST', 'Total'];
-    doc.setFont('helvetica', 'bold');
-    doc.setFontSize(8);
-    headers.forEach((h, i) => doc.text(h, cols[i], y));
-    y += 2;
-    doc.line(margin, y, 195, y);
-    y += 5;
-
+    // Table body rows
     doc.setFont('helvetica', 'normal');
-    invoice.items.forEach(item => {
+    doc.setFontSize(8);
+    invoice.items.forEach((item, idx) => {
+      // Alternating row bg
+      const rowColor = idx % 2 === 0 ? [255, 255, 255] : [237, 240, 250];
+      doc.setFillColor(rowColor[0], rowColor[1], rowColor[2]);
+      doc.rect(margin, y - 3.5, pageW - margin * 2, 6, 'F');
+
+      doc.setTextColor(30, 30, 60);
       const row = [
-        item.productName.substring(0, 20),
+        item.productName.substring(0, 22),
         item.qty.toString(),
         item.rate.toFixed(0),
         item.amount.toFixed(0),
@@ -72,29 +101,54 @@ export function InvoicePreview({ invoice, settings, onBack }: Props) {
         item.total.toFixed(2),
       ];
       row.forEach((val, i) => doc.text(val, cols[i], y));
-      y += 5;
+      y += 6;
     });
 
-    y += 2;
-    doc.line(margin, y, 195, y);
+    y += 4;
+    // Thin separator
+    doc.setDrawColor(67, 56, 202);
+    doc.setLineWidth(0.5);
+    doc.line(margin, y, pageW - margin, y);
+    y += 8;
+
+    // --- Totals section ---
+    const totalsX = 130;
+    doc.setFontSize(9);
+    doc.setTextColor(80, 80, 120);
+    doc.setFont('helvetica', 'normal');
+    doc.text('Subtotal:', totalsX, y);
+    doc.text(`Rs.${invoice.subtotal.toFixed(2)}`, pageW - margin, y, { align: 'right' });
+    y += 5;
+    doc.text('CGST:', totalsX, y);
+    doc.text(`Rs.${invoice.totalCgst.toFixed(2)}`, pageW - margin, y, { align: 'right' });
+    y += 5;
+    doc.text('SGST:', totalsX, y);
+    doc.text(`Rs.${invoice.totalSgst.toFixed(2)}`, pageW - margin, y, { align: 'right' });
     y += 6;
 
+    // Grand total highlight box
+    doc.setFillColor(67, 56, 202);
+    doc.roundedRect(totalsX - 4, y - 4, pageW - margin - totalsX + 8, 10, 2, 2, 'F');
+    doc.setTextColor(255, 255, 255);
+    doc.setFontSize(11);
     doc.setFont('helvetica', 'bold');
-    doc.text(`Subtotal: Rs.${invoice.subtotal.toFixed(2)}`, 140, y);
-    y += 5;
-    doc.setFont('helvetica', 'normal');
-    doc.text(`CGST: Rs.${invoice.totalCgst.toFixed(2)}`, 140, y);
-    y += 5;
-    doc.text(`SGST: Rs.${invoice.totalSgst.toFixed(2)}`, 140, y);
-    y += 5;
-    doc.setFont('helvetica', 'bold');
-    doc.setFontSize(10);
-    doc.text(`Grand Total: Rs.${invoice.grandTotal.toFixed(2)}`, 140, y);
-    y += 7;
+    doc.text('Grand Total:', totalsX, y + 3);
+    doc.text(`Rs.${invoice.grandTotal.toFixed(2)}`, pageW - margin, y + 3, { align: 'right' });
+    y += 14;
 
+    // Amount in words
     doc.setFontSize(7);
     doc.setFont('helvetica', 'italic');
+    doc.setTextColor(100, 100, 140);
     doc.text(numberToWords(invoice.grandTotal), margin, y);
+
+    // --- Bottom accent bar ---
+    doc.setFillColor(67, 56, 202);
+    doc.rect(0, pageH - 8, pageW, 8, 'F');
+    doc.setTextColor(200, 200, 230);
+    doc.setFontSize(6);
+    doc.setFont('helvetica', 'normal');
+    doc.text('Generated with GST Billing App', pageW / 2, pageH - 3, { align: 'center' });
 
     doc.save(`${invoice.invoiceNumber}.pdf`);
     toast.success('PDF downloaded!');
