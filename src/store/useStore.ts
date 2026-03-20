@@ -65,7 +65,7 @@ export function useInvoices() {
 
   const getNextInvoiceNumber = useCallback(() => {
     const num = invoices.length + 1;
-    return `INV-${String(num).padStart(5, '0')}`;
+    return `INV-${String(num).padStart(3, '0')}`;
   }, [invoices]);
 
   return { invoices, addInvoice, getNextInvoiceNumber };
