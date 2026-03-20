@@ -91,15 +91,17 @@ export default function Billing() {
       invoiceNumber: getNextInvoiceNumber(),
       date: new Date().toISOString(),
       customerName: customerName.trim(),
+      customerPhone: customerPhone.trim() || undefined,
       items: [...items],
       ...totals,
     };
 
+    addOrUpdateCustomer(customerName.trim(), customerPhone.trim() || undefined);
     addInvoice(invoice);
     setLastInvoice(invoice);
     setShowInvoice(true);
     toast.success(`Invoice ${invoice.invoiceNumber} generated!`);
-  }, [items, customerName, totals, addInvoice, getNextInvoiceNumber]);
+  }, [items, customerName, customerPhone, totals, addInvoice, getNextInvoiceNumber, addOrUpdateCustomer]);
 
   const newBill = useCallback(() => {
     setItems([]);
