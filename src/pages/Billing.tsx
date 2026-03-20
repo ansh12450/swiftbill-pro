@@ -172,11 +172,41 @@ export default function Billing() {
 
       <div className="stat-card">
         <div className="flex flex-col sm:flex-row gap-3 mb-4">
-          <div className="flex-1">
+          <div className="flex-1 relative">
             <label className="text-xs text-muted-foreground mb-1 block">Customer Name</label>
-            <Input value={customerName} onChange={e => setCustomerName(e.target.value)} placeholder="Customer name" className="h-9" />
+            <Input
+              ref={customerRef}
+              value={customerName}
+              onChange={e => { setCustomerName(e.target.value); setShowCustomerSuggestions(true); }}
+              onFocus={() => setShowCustomerSuggestions(true)}
+              onBlur={() => setTimeout(() => setShowCustomerSuggestions(false), 200)}
+              placeholder="Customer name"
+              className="h-9"
+            />
+            {showCustomerSuggestions && filteredCustomers.length > 0 && (
+              <div className="absolute z-10 top-full left-0 right-0 bg-card border rounded-md shadow-lg mt-1 max-h-36 overflow-auto">
+                {filteredCustomers.map(c => (
+                  <button
+                    key={c.id}
+                    className="w-full text-left px-3 py-2 hover:bg-muted text-sm flex justify-between items-center"
+                    onMouseDown={() => {
+                      setCustomerName(c.name);
+                      setCustomerPhone(c.phone || '');
+                      setShowCustomerSuggestions(false);
+                    }}
+                  >
+                    <span>{c.name}</span>
+                    {c.phone && <span className="text-muted-foreground text-xs">{c.phone}</span>}
+                  </button>
+                ))}
+              </div>
+            )}
           </div>
-          <div className="w-48">
+          <div className="w-40">
+            <label className="text-xs text-muted-foreground mb-1 block">Phone (optional)</label>
+            <Input value={customerPhone} onChange={e => setCustomerPhone(e.target.value)} placeholder="9876543210" className="h-9" />
+          </div>
+          <div className="w-40">
             <label className="text-xs text-muted-foreground mb-1 block">Invoice #</label>
             <Input value={getNextInvoiceNumber()} readOnly className="h-9 bg-muted font-mono text-xs" />
           </div>
