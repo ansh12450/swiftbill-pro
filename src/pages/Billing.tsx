@@ -2,7 +2,7 @@ import { useState, useRef, useCallback, useMemo, KeyboardEvent } from 'react';
 import { Plus, Trash2, Mic, MicOff, FileText } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { BillItem, calculateBillItem, numberToWords } from '@/types/billing';
-import { useProducts, useInvoices, useShopSettings } from '@/store/useStore';
+import { useProducts, useInvoices, useShopSettings, useCustomers } from '@/store/useStore';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { toast } from 'sonner';
@@ -12,15 +12,24 @@ export default function Billing() {
   const { products } = useProducts();
   const { addInvoice, getNextInvoiceNumber } = useInvoices();
   const { settings } = useShopSettings();
+  const { customers, addOrUpdateCustomer } = useCustomers();
   const [items, setItems] = useState<BillItem[]>([]);
   const [customerName, setCustomerName] = useState('');
+  const [customerPhone, setCustomerPhone] = useState('');
   const [showInvoice, setShowInvoice] = useState(false);
   const [lastInvoice, setLastInvoice] = useState<any>(null);
   const [listening, setListening] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
   const [activeRow, setActiveRow] = useState(-1);
   const [showSuggestions, setShowSuggestions] = useState(false);
+  const [showCustomerSuggestions, setShowCustomerSuggestions] = useState(false);
   const searchRef = useRef<HTMLInputElement>(null);
+  const customerRef = useRef<HTMLInputElement>(null);
+
+  const filteredCustomers = useMemo(() => {
+    if (!customerName) return customers.slice(0, 5);
+    return customers.filter(c => c.name.toLowerCase().includes(customerName.toLowerCase())).slice(0, 5);
+  }, [customers, customerName]);
 
   const filteredProducts = useMemo(() => {
     if (!searchTerm) return products.slice(0, 8);
@@ -82,19 +91,22 @@ export default function Billing() {
       invoiceNumber: getNextInvoiceNumber(),
       date: new Date().toISOString(),
       customerName: customerName.trim(),
+      customerPhone: customerPhone.trim() || undefined,
       items: [...items],
       ...totals,
     };
 
+    addOrUpdateCustomer(customerName.trim(), customerPhone.trim() || undefined);
     addInvoice(invoice);
     setLastInvoice(invoice);
     setShowInvoice(true);
     toast.success(`Invoice ${invoice.invoiceNumber} generated!`);
-  }, [items, customerName, totals, addInvoice, getNextInvoiceNumber]);
+  }, [items, customerName, customerPhone, totals, addInvoice, getNextInvoiceNumber, addOrUpdateCustomer]);
 
   const newBill = useCallback(() => {
     setItems([]);
     setCustomerName('');
+    setCustomerPhone('');
     setShowInvoice(false);
     setLastInvoice(null);
   }, []);
@@ -160,11 +172,41 @@ export default function Billing() {
 
       <div className="stat-card">
         <div className="flex flex-col sm:flex-row gap-3 mb-4">
-          <div className="flex-1">
+          <div className="flex-1 relative">
             <label className="text-xs text-muted-foreground mb-1 block">Customer Name</label>
-            <Input value={customerName} onChange={e => setCustomerName(e.target.value)} placeholder="Customer name" className="h-9" />
+            <Input
+              ref={customerRef}
+              value={customerName}
+              onChange={e => { setCustomerName(e.target.value); setShowCustomerSuggestions(true); }}
+              onFocus={() => setShowCustomerSuggestions(true)}
+              onBlur={() => setTimeout(() => setShowCustomerSuggestions(false), 200)}
+              placeholder="Customer name"
+              className="h-9"
+            />
+            {showCustomerSuggestions && filteredCustomers.length > 0 && (
+              <div className="absolute z-10 top-full left-0 right-0 bg-card border rounded-md shadow-lg mt-1 max-h-36 overflow-auto">
+                {filteredCustomers.map(c => (
+                  <button
+                    key={c.id}
+                    className="w-full text-left px-3 py-2 hover:bg-muted text-sm flex justify-between items-center"
+                    onMouseDown={() => {
+                      setCustomerName(c.name);
+                      setCustomerPhone(c.phone || '');
+                      setShowCustomerSuggestions(false);
+                    }}
+                  >
+                    <span>{c.name}</span>
+                    {c.phone && <span className="text-muted-foreground text-xs">{c.phone}</span>}
+                  </button>
+                ))}
+              </div>
+            )}
           </div>
-          <div className="w-48">
+          <div className="w-40">
+            <label className="text-xs text-muted-foreground mb-1 block">Phone (optional)</label>
+            <Input value={customerPhone} onChange={e => setCustomerPhone(e.target.value)} placeholder="9876543210" className="h-9" />
+          </div>
+          <div className="w-40">
             <label className="text-xs text-muted-foreground mb-1 block">Invoice #</label>
             <Input value={getNextInvoiceNumber()} readOnly className="h-9 bg-muted font-mono text-xs" />
           </div>
