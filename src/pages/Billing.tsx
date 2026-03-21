@@ -51,9 +51,14 @@ export default function Billing() {
     setShowSuggestions(false);
   }, []);
 
-  const updateItemField = useCallback((id: string, field: 'qty' | 'rate' | 'gstPercent', value: number) => {
+  const updateItemField = useCallback((id: string, field: 'qty' | 'rate' | 'gstPercent' | 'cgst' | 'sgst', value: number) => {
     setItems(prev => prev.map(item => {
       if (item.id !== id) return item;
+      if (field === 'cgst' || field === 'sgst') {
+        const updated = { ...item, [field]: Math.round(value * 100) / 100 };
+        updated.total = Math.round((updated.amount + updated.cgst + updated.sgst) * 100) / 100;
+        return updated;
+      }
       const updated = { ...item, [field]: value };
       const recalc = calculateBillItem(updated.productName, updated.qty, updated.rate, updated.gstPercent);
       return { ...recalc, id: item.id, productName: item.productName };
