@@ -311,8 +311,24 @@ export default function Billing() {
                         className="billing-input w-16 text-center"
                       />
                     </td>
-                    <td className="py-1 px-2 text-right text-muted-foreground">₹{item.cgst.toFixed(2)}</td>
-                    <td className="py-1 px-2 text-right text-muted-foreground">₹{item.sgst.toFixed(2)}</td>
+                    <td className="py-1 px-2">
+                      <input
+                        type="number"
+                        min={0}
+                        value={item.cgst}
+                        onChange={e => updateItemField(item.id, 'cgst', parseFloat(e.target.value) || 0)}
+                        className="billing-input w-16 text-right"
+                      />
+                    </td>
+                    <td className="py-1 px-2">
+                      <input
+                        type="number"
+                        min={0}
+                        value={item.sgst}
+                        onChange={e => updateItemField(item.id, 'sgst', parseFloat(e.target.value) || 0)}
+                        className="billing-input w-16 text-right"
+                      />
+                    </td>
                     <td className="py-1 px-2 text-right font-semibold">₹{item.total.toFixed(2)}</td>
                     <td className="py-1 px-2">
                       <button onClick={() => removeItem(item.id)} className="text-destructive/60 hover:text-destructive">
