@@ -1,11 +1,15 @@
-import { IndianRupee, TrendingUp, ShoppingCart, Package } from 'lucide-react';
+import { IndianRupee, TrendingUp, ShoppingCart, Package, Eye } from 'lucide-react';
 import { motion } from 'framer-motion';
-import { useInvoices, useProducts } from '@/store/useStore';
-import { useMemo } from 'react';
+import { useInvoices, useProducts, useShopSettings } from '@/store/useStore';
+import { useMemo, useState } from 'react';
+import { InvoicePreview } from '@/components/InvoicePreview';
+import { Invoice } from '@/types/billing';
 
 export default function Dashboard() {
   const { invoices } = useInvoices();
   const { products } = useProducts();
+  const { settings } = useShopSettings();
+  const [selectedInvoice, setSelectedInvoice] = useState<Invoice | null>(null);
 
   const stats = useMemo(() => {
     const today = new Date().toDateString();
@@ -30,6 +34,10 @@ export default function Dashboard() {
     { label: 'GST Collected', value: `₹${stats.totalGst.toLocaleString('en-IN')}`, sub: 'CGST + SGST', icon: ShoppingCart, color: 'text-accent' },
     { label: 'Products', value: stats.totalProducts.toString(), sub: 'In catalog', icon: Package, color: 'text-muted-foreground' },
   ];
+
+  if (selectedInvoice) {
+    return <InvoicePreview invoice={selectedInvoice} settings={settings} onBack={() => setSelectedInvoice(null)} />;
+  }
 
   return (
     <div className="space-y-6">
@@ -67,6 +75,7 @@ export default function Dashboard() {
                   <th className="text-left py-2 font-medium">Customer</th>
                   <th className="text-left py-2 font-medium">Date</th>
                   <th className="text-right py-2 font-medium">Amount</th>
+                  <th className="text-center py-2 font-medium">Action</th>
                 </tr>
               </thead>
               <tbody>
@@ -76,6 +85,15 @@ export default function Dashboard() {
                     <td className="py-2">{inv.customerName}</td>
                     <td className="py-2 text-muted-foreground">{new Date(inv.date).toLocaleDateString('en-IN')}</td>
                     <td className="py-2 text-right font-semibold">₹{inv.grandTotal.toLocaleString('en-IN')}</td>
+                    <td className="py-2 text-center">
+                      <button
+                        onClick={() => setSelectedInvoice(inv)}
+                        className="inline-flex items-center gap-1 text-xs text-primary hover:text-primary/80 font-medium"
+                      >
+                        <Eye className="h-3.5 w-3.5" />
+                        View
+                      </button>
+                    </td>
                   </tr>
                 ))}
               </tbody>
