@@ -51,9 +51,14 @@ export default function Billing() {
     setShowSuggestions(false);
   }, []);
 
-  const updateItemField = useCallback((id: string, field: 'qty' | 'rate' | 'gstPercent', value: number) => {
+  const updateItemField = useCallback((id: string, field: 'qty' | 'rate' | 'gstPercent' | 'cgst' | 'sgst', value: number) => {
     setItems(prev => prev.map(item => {
       if (item.id !== id) return item;
+      if (field === 'cgst' || field === 'sgst') {
+        const updated = { ...item, [field]: Math.round(value * 100) / 100 };
+        updated.total = Math.round((updated.amount + updated.cgst + updated.sgst) * 100) / 100;
+        return updated;
+      }
       const updated = { ...item, [field]: value };
       const recalc = calculateBillItem(updated.productName, updated.qty, updated.rate, updated.gstPercent);
       return { ...recalc, id: item.id, productName: item.productName };
@@ -306,8 +311,24 @@ export default function Billing() {
                         className="billing-input w-16 text-center"
                       />
                     </td>
-                    <td className="py-1 px-2 text-right text-muted-foreground">₹{item.cgst.toFixed(2)}</td>
-                    <td className="py-1 px-2 text-right text-muted-foreground">₹{item.sgst.toFixed(2)}</td>
+                    <td className="py-1 px-2">
+                      <input
+                        type="number"
+                        min={0}
+                        value={item.cgst}
+                        onChange={e => updateItemField(item.id, 'cgst', parseFloat(e.target.value) || 0)}
+                        className="billing-input w-16 text-right"
+                      />
+                    </td>
+                    <td className="py-1 px-2">
+                      <input
+                        type="number"
+                        min={0}
+                        value={item.sgst}
+                        onChange={e => updateItemField(item.id, 'sgst', parseFloat(e.target.value) || 0)}
+                        className="billing-input w-16 text-right"
+                      />
+                    </td>
                     <td className="py-1 px-2 text-right font-semibold">₹{item.total.toFixed(2)}</td>
                     <td className="py-1 px-2">
                       <button onClick={() => removeItem(item.id)} className="text-destructive/60 hover:text-destructive">
