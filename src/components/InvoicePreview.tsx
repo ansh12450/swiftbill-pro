@@ -123,7 +123,7 @@ export function InvoicePreview({ invoice, settings, onBack }: Props) {
   };
 
   const handleWhatsApp = () => {
-    const text = `*ESTIMATE*\n\n*Estimate: ${invoice.invoiceNumber}*\nDate: ${new Date(invoice.date).toLocaleDateString('en-IN')}\nCustomer: ${invoice.customerName}\n\n${invoice.items.map((i, idx) => `${idx + 1}. ${i.productName} x${i.qty} = ₹${i.total.toFixed(2)}`).join('\n')}\n\n*Grand Total: ₹${invoice.grandTotal.toFixed(2)}*\n${numberToWords(invoice.grandTotal)}`;
+    const text = `Date: ${new Date(invoice.date).toLocaleDateString('en-IN')}\n\n${invoice.items.map((i, idx) => `${idx + 1}. ${i.productName} x${i.qty} = ₹${i.total.toFixed(2)}`).join('\n')}\n\n*Grand Total: ₹${invoice.grandTotal.toFixed(2)}*\n${numberToWords(invoice.grandTotal)}`;
     window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, '_blank');
   };
 
