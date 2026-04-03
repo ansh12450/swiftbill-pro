@@ -131,12 +131,6 @@ export function InvoicePreview({ invoice, settings, onBack }: Props) {
       </div>
 
       <div ref={invoiceRef} className="stat-card max-w-2xl mx-auto print:shadow-none print:border-0">
-        <div className="flex justify-end text-sm mb-4">
-          <div>
-            <span className="text-muted-foreground">Date: </span>
-            {new Date(invoice.date).toLocaleDateString('en-IN')}
-          </div>
-        </div>
 
         <table className="w-full text-xs mb-4">
           <thead>
