@@ -25,17 +25,7 @@ export function InvoicePreview({ invoice, settings, onBack }: Props) {
 
     // White background (default) — no colored backgrounds
 
-    // --- Date only ---
     y = 20;
-    doc.setFontSize(10);
-    doc.setFont('helvetica', 'normal');
-    doc.setTextColor(0, 0, 0);
-    doc.text(`Date: ${new Date(invoice.date).toLocaleDateString('en-IN')}`, pageW - margin, y, { align: 'right' });
-    y += 4;
-    doc.setDrawColor(0, 0, 0);
-    doc.setLineWidth(0.3);
-    doc.line(margin, y, pageW - margin, y);
-    y += 8;
 
     // --- Table Header ---
     const cols = [margin, 60, 80, 100, 120, 138, 155, 172, 189];
