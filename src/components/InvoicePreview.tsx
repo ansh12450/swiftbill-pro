@@ -141,32 +141,32 @@ export function InvoicePreview({ invoice, settings, onBack }: Props) {
 
       <div ref={invoiceRef} className="stat-card max-w-2xl mx-auto print:shadow-none print:border-0">
 
-        <table className="w-full text-xs mb-4">
+        <table className="w-full text-xs mb-4 border border-border">
           <thead>
-            <tr className="border-y bg-muted/50 text-muted-foreground">
-              <th className="py-1 px-1 text-left">#</th>
-              <th className="py-1 px-1 text-left">Product</th>
-              <th className="py-1 px-1 text-center">Qty</th>
-              <th className="py-1 px-1 text-right">Rate</th>
-              <th className="py-1 px-1 text-right">Amt</th>
-              <th className="py-1 px-1 text-center">GST%</th>
-              <th className="py-1 px-1 text-right">CGST</th>
-              <th className="py-1 px-1 text-right">SGST</th>
-              <th className="py-1 px-1 text-right">Total</th>
+            <tr className="bg-muted/50 text-muted-foreground">
+              <th className="py-1.5 px-2 text-left border border-border">#</th>
+              <th className="py-1.5 px-2 text-left border border-border">Product</th>
+              <th className="py-1.5 px-2 text-center border border-border">Qty</th>
+              <th className="py-1.5 px-2 text-right border border-border">Rate</th>
+              <th className="py-1.5 px-2 text-right border border-border">Amt</th>
+              <th className="py-1.5 px-2 text-center border border-border">GST%</th>
+              <th className="py-1.5 px-2 text-right border border-border">CGST</th>
+              <th className="py-1.5 px-2 text-right border border-border">SGST</th>
+              <th className="py-1.5 px-2 text-right border border-border">Total</th>
             </tr>
           </thead>
           <tbody>
             {invoice.items.map((item, idx) => (
-              <tr key={item.id} className="border-b">
-                <td className="py-1 px-1">{idx + 1}</td>
-                <td className="py-1 px-1">{item.productName}</td>
-                <td className="py-1 px-1 text-center">{item.qty}</td>
-                <td className="py-1 px-1 text-right">₹{item.rate.toFixed(2)}</td>
-                <td className="py-1 px-1 text-right">₹{item.amount.toFixed(2)}</td>
-                <td className="py-1 px-1 text-center">{item.gstPercent}%</td>
-                <td className="py-1 px-1 text-right">₹{item.cgst.toFixed(2)}</td>
-                <td className="py-1 px-1 text-right">₹{item.sgst.toFixed(2)}</td>
-                <td className="py-1 px-1 text-right font-semibold">₹{item.total.toFixed(2)}</td>
+              <tr key={item.id}>
+                <td className="py-1.5 px-2 border border-border">{idx + 1}</td>
+                <td className="py-1.5 px-2 border border-border">{item.productName}</td>
+                <td className="py-1.5 px-2 text-center border border-border">{item.qty}</td>
+                <td className="py-1.5 px-2 text-right border border-border">₹{item.rate.toFixed(2)}</td>
+                <td className="py-1.5 px-2 text-right border border-border">₹{item.amount.toFixed(2)}</td>
+                <td className="py-1.5 px-2 text-center border border-border">{item.gstPercent}%</td>
+                <td className="py-1.5 px-2 text-right border border-border">₹{item.cgst.toFixed(2)}</td>
+                <td className="py-1.5 px-2 text-right border border-border">₹{item.sgst.toFixed(2)}</td>
+                <td className="py-1.5 px-2 text-right font-semibold border border-border">₹{item.total.toFixed(2)}</td>
               </tr>
             ))}
           </tbody>
