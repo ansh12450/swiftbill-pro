@@ -141,23 +141,11 @@ export function InvoicePreview({ invoice, settings, onBack }: Props) {
       </div>
 
       <div ref={invoiceRef} className="stat-card max-w-2xl mx-auto print:shadow-none print:border-0">
-        <div className="text-center border-b border-border pb-4 mb-4">
-          <div className="text-sm font-semibold border-y border-border py-1">ESTIMATE</div>
-        </div>
-
-        <div className="flex justify-between text-sm mb-4">
-          <div>
-            <span className="text-muted-foreground">Estimate: </span>
-            <span className="font-mono">{invoice.invoiceNumber}</span>
-          </div>
+        <div className="flex justify-end text-sm mb-4">
           <div>
             <span className="text-muted-foreground">Date: </span>
             {new Date(invoice.date).toLocaleDateString('en-IN')}
           </div>
-        </div>
-        <div className="text-sm mb-4">
-          <span className="text-muted-foreground">Customer: </span>
-          <span className="font-medium">{invoice.customerName}</span>
         </div>
 
         <table className="w-full text-xs mb-4">
