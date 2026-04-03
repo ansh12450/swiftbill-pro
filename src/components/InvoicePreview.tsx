@@ -25,27 +25,17 @@ export function InvoicePreview({ invoice, settings, onBack }: Props) {
 
     // White background (default) — no colored backgrounds
 
-    // --- Title ---
+    // --- Date only ---
     y = 20;
-    doc.setFontSize(16);
-    doc.setFont('helvetica', 'bold');
-    doc.setTextColor(0, 0, 0);
-    doc.text('ESTIMATE', pageW / 2, y, { align: 'center' });
-    y += 4;
-    doc.setDrawColor(0, 0, 0);
-    doc.setLineWidth(0.5);
-    doc.line(margin, y, pageW - margin, y);
-    y += 10;
-
-    // --- Estimate details ---
     doc.setFontSize(10);
     doc.setFont('helvetica', 'normal');
     doc.setTextColor(0, 0, 0);
-    doc.text(`Estimate: ${invoice.invoiceNumber}`, margin, y);
     doc.text(`Date: ${new Date(invoice.date).toLocaleDateString('en-IN')}`, pageW - margin, y, { align: 'right' });
-    y += 6;
-    doc.text(`Customer: ${invoice.customerName}`, margin, y);
-    y += 10;
+    y += 4;
+    doc.setDrawColor(0, 0, 0);
+    doc.setLineWidth(0.3);
+    doc.line(margin, y, pageW - margin, y);
+    y += 8;
 
     // --- Table Header ---
     const cols = [margin, 60, 80, 100, 120, 138, 155, 172, 189];
