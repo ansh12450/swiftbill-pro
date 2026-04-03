@@ -25,17 +25,7 @@ export function InvoicePreview({ invoice, settings, onBack }: Props) {
 
     // White background (default) — no colored backgrounds
 
-    // --- Date only ---
     y = 20;
-    doc.setFontSize(10);
-    doc.setFont('helvetica', 'normal');
-    doc.setTextColor(0, 0, 0);
-    doc.text(`Date: ${new Date(invoice.date).toLocaleDateString('en-IN')}`, pageW - margin, y, { align: 'right' });
-    y += 4;
-    doc.setDrawColor(0, 0, 0);
-    doc.setLineWidth(0.3);
-    doc.line(margin, y, pageW - margin, y);
-    y += 8;
 
     // --- Table Header ---
     const cols = [margin, 60, 80, 100, 120, 138, 155, 172, 189];
@@ -141,12 +131,6 @@ export function InvoicePreview({ invoice, settings, onBack }: Props) {
       </div>
 
       <div ref={invoiceRef} className="stat-card max-w-2xl mx-auto print:shadow-none print:border-0">
-        <div className="flex justify-end text-sm mb-4">
-          <div>
-            <span className="text-muted-foreground">Date: </span>
-            {new Date(invoice.date).toLocaleDateString('en-IN')}
-          </div>
-        </div>
 
         <table className="w-full text-xs mb-4">
           <thead>
