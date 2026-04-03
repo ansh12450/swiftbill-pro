@@ -25,27 +25,17 @@ export function InvoicePreview({ invoice, settings, onBack }: Props) {
 
     // White background (default) — no colored backgrounds
 
-    // --- Title ---
+    // --- Date only ---
     y = 20;
-    doc.setFontSize(16);
-    doc.setFont('helvetica', 'bold');
-    doc.setTextColor(0, 0, 0);
-    doc.text('ESTIMATE', pageW / 2, y, { align: 'center' });
-    y += 4;
-    doc.setDrawColor(0, 0, 0);
-    doc.setLineWidth(0.5);
-    doc.line(margin, y, pageW - margin, y);
-    y += 10;
-
-    // --- Estimate details ---
     doc.setFontSize(10);
     doc.setFont('helvetica', 'normal');
     doc.setTextColor(0, 0, 0);
-    doc.text(`Estimate: ${invoice.invoiceNumber}`, margin, y);
     doc.text(`Date: ${new Date(invoice.date).toLocaleDateString('en-IN')}`, pageW - margin, y, { align: 'right' });
-    y += 6;
-    doc.text(`Customer: ${invoice.customerName}`, margin, y);
-    y += 10;
+    y += 4;
+    doc.setDrawColor(0, 0, 0);
+    doc.setLineWidth(0.3);
+    doc.line(margin, y, pageW - margin, y);
+    y += 8;
 
     // --- Table Header ---
     const cols = [margin, 60, 80, 100, 120, 138, 155, 172, 189];
@@ -133,7 +123,7 @@ export function InvoicePreview({ invoice, settings, onBack }: Props) {
   };
 
   const handleWhatsApp = () => {
-    const text = `*ESTIMATE*\n\n*Estimate: ${invoice.invoiceNumber}*\nDate: ${new Date(invoice.date).toLocaleDateString('en-IN')}\nCustomer: ${invoice.customerName}\n\n${invoice.items.map((i, idx) => `${idx + 1}. ${i.productName} x${i.qty} = ₹${i.total.toFixed(2)}`).join('\n')}\n\n*Grand Total: ₹${invoice.grandTotal.toFixed(2)}*\n${numberToWords(invoice.grandTotal)}`;
+    const text = `Date: ${new Date(invoice.date).toLocaleDateString('en-IN')}\n\n${invoice.items.map((i, idx) => `${idx + 1}. ${i.productName} x${i.qty} = ₹${i.total.toFixed(2)}`).join('\n')}\n\n*Grand Total: ₹${invoice.grandTotal.toFixed(2)}*\n${numberToWords(invoice.grandTotal)}`;
     window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, '_blank');
   };
 
@@ -151,23 +141,11 @@ export function InvoicePreview({ invoice, settings, onBack }: Props) {
       </div>
 
       <div ref={invoiceRef} className="stat-card max-w-2xl mx-auto print:shadow-none print:border-0">
-        <div className="text-center border-b border-border pb-4 mb-4">
-          <div className="text-sm font-semibold border-y border-border py-1">ESTIMATE</div>
-        </div>
-
-        <div className="flex justify-between text-sm mb-4">
-          <div>
-            <span className="text-muted-foreground">Estimate: </span>
-            <span className="font-mono">{invoice.invoiceNumber}</span>
-          </div>
+        <div className="flex justify-end text-sm mb-4">
           <div>
             <span className="text-muted-foreground">Date: </span>
             {new Date(invoice.date).toLocaleDateString('en-IN')}
           </div>
-        </div>
-        <div className="text-sm mb-4">
-          <span className="text-muted-foreground">Customer: </span>
-          <span className="font-medium">{invoice.customerName}</span>
         </div>
 
         <table className="w-full text-xs mb-4">
