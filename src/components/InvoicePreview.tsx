@@ -25,7 +25,12 @@ export function InvoicePreview({ invoice, settings, onBack }: Props) {
 
     // White background (default) — no colored backgrounds
 
-    y = 20;
+    // --- ESTIMATE header ---
+    doc.setFontSize(16);
+    doc.setFont('helvetica', 'bold');
+    doc.setTextColor(0, 0, 0);
+    doc.text('ESTIMATE', pageW / 2, y, { align: 'center' });
+    y += 10;
 
     // --- Table with borders ---
     const cols = [margin + 2, 62, 82, 102, 122, 140, 157, 174];
@@ -140,6 +145,7 @@ export function InvoicePreview({ invoice, settings, onBack }: Props) {
       </div>
 
       <div ref={invoiceRef} className="stat-card max-w-2xl mx-auto print:shadow-none print:border-0">
+        <h2 className="text-center text-xl font-bold mb-4">ESTIMATE</h2>
 
         <table className="w-full text-xs mb-4 border border-border">
           <thead>
