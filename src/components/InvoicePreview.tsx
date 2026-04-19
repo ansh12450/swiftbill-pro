@@ -144,52 +144,52 @@ export function InvoicePreview({ invoice, settings, onBack }: Props) {
         </div>
       </div>
 
-      <div ref={invoiceRef} className="stat-card max-w-2xl mx-auto print:shadow-none print:border-0">
-        <h2 className="text-center text-xl font-bold mb-4">ESTIMATE</h2>
+      <div ref={invoiceRef} className="max-w-2xl mx-auto bg-white text-black p-6 border border-black print:shadow-none print:border-black">
+        <h2 className="text-center text-xl font-bold mb-4 text-black">ESTIMATE</h2>
 
-        <table className="w-full text-xs mb-4 border border-border">
+        <table className="w-full text-xs mb-4 border border-black border-collapse">
           <thead>
-            <tr className="bg-muted/50 text-muted-foreground">
-              <th className="py-1.5 px-2 text-left border border-border">#</th>
-              <th className="py-1.5 px-2 text-left border border-border">Product</th>
-              <th className="py-1.5 px-2 text-center border border-border">Qty</th>
-              <th className="py-1.5 px-2 text-right border border-border">Rate</th>
-              <th className="py-1.5 px-2 text-right border border-border">Amt</th>
-              <th className="py-1.5 px-2 text-center border border-border">GST%</th>
-              <th className="py-1.5 px-2 text-right border border-border">CGST</th>
-              <th className="py-1.5 px-2 text-right border border-border">SGST</th>
-              <th className="py-1.5 px-2 text-right border border-border">Total</th>
+            <tr className="bg-white text-black">
+              <th className="py-1.5 px-2 text-left border border-black">#</th>
+              <th className="py-1.5 px-2 text-left border border-black">Product</th>
+              <th className="py-1.5 px-2 text-center border border-black">Qty</th>
+              <th className="py-1.5 px-2 text-right border border-black">Rate</th>
+              <th className="py-1.5 px-2 text-right border border-black">Amt</th>
+              <th className="py-1.5 px-2 text-center border border-black">GST%</th>
+              <th className="py-1.5 px-2 text-right border border-black">CGST</th>
+              <th className="py-1.5 px-2 text-right border border-black">SGST</th>
+              <th className="py-1.5 px-2 text-right border border-black">Total</th>
             </tr>
           </thead>
           <tbody>
             {invoice.items.map((item, idx) => (
-              <tr key={item.id}>
-                <td className="py-1.5 px-2 border border-border">{idx + 1}</td>
-                <td className="py-1.5 px-2 border border-border">{item.productName}</td>
-                <td className="py-1.5 px-2 text-center border border-border">{item.qty}</td>
-                <td className="py-1.5 px-2 text-right border border-border">₹{item.rate.toFixed(2)}</td>
-                <td className="py-1.5 px-2 text-right border border-border">₹{item.amount.toFixed(2)}</td>
-                <td className="py-1.5 px-2 text-center border border-border">{item.gstPercent}%</td>
-                <td className="py-1.5 px-2 text-right border border-border">₹{item.cgst.toFixed(2)}</td>
-                <td className="py-1.5 px-2 text-right border border-border">₹{item.sgst.toFixed(2)}</td>
-                <td className="py-1.5 px-2 text-right font-semibold border border-border">₹{item.total.toFixed(2)}</td>
+              <tr key={item.id} className="bg-white text-black">
+                <td className="py-1.5 px-2 border border-black">{idx + 1}</td>
+                <td className="py-1.5 px-2 border border-black">{item.productName}</td>
+                <td className="py-1.5 px-2 text-center border border-black">{item.qty}</td>
+                <td className="py-1.5 px-2 text-right border border-black">Rs.{item.rate.toFixed(2)}</td>
+                <td className="py-1.5 px-2 text-right border border-black">Rs.{item.amount.toFixed(2)}</td>
+                <td className="py-1.5 px-2 text-center border border-black">{item.gstPercent}%</td>
+                <td className="py-1.5 px-2 text-right border border-black">Rs.{item.cgst.toFixed(2)}</td>
+                <td className="py-1.5 px-2 text-right border border-black">Rs.{item.sgst.toFixed(2)}</td>
+                <td className="py-1.5 px-2 text-right font-semibold border border-black">Rs.{item.total.toFixed(2)}</td>
               </tr>
             ))}
           </tbody>
         </table>
 
         <div className="flex justify-end">
-          <div className="w-56 space-y-1 text-sm">
-            <div className="flex justify-between"><span className="text-muted-foreground">Subtotal</span><span>₹{invoice.subtotal.toFixed(2)}</span></div>
-            <div className="flex justify-between"><span className="text-muted-foreground">CGST</span><span>₹{invoice.totalCgst.toFixed(2)}</span></div>
-            <div className="flex justify-between"><span className="text-muted-foreground">SGST</span><span>₹{invoice.totalSgst.toFixed(2)}</span></div>
-            <div className="border-t pt-1 flex justify-between font-bold">
+          <div className="w-56 space-y-1 text-sm text-black">
+            <div className="flex justify-between"><span>Subtotal</span><span>Rs.{invoice.subtotal.toFixed(2)}</span></div>
+            <div className="flex justify-between"><span>CGST</span><span>Rs.{invoice.totalCgst.toFixed(2)}</span></div>
+            <div className="flex justify-between"><span>SGST</span><span>Rs.{invoice.totalSgst.toFixed(2)}</span></div>
+            <div className="border-t border-black pt-1 flex justify-between font-bold">
               <span>Grand Total</span>
-              <span className="total-highlight">₹{invoice.grandTotal.toFixed(2)}</span>
+              <span>Rs.{invoice.grandTotal.toFixed(2)}</span>
             </div>
           </div>
         </div>
-        <p className="text-[10px] text-muted-foreground mt-3 italic">{numberToWords(invoice.grandTotal)}</p>
+        <p className="text-[10px] text-black mt-3 italic">{numberToWords(invoice.grandTotal)}</p>
       </div>
     </div>
   );
